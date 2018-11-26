@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         btStart.setOnClickListener(new View.OnClickListener() {
             PendingIntent pi;
-            Intent intent;
 
             @Override
             public void onClick(View view) {
