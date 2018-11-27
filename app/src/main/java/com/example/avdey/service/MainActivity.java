@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     public static int STATUS_START = 1;
     public static int STATUS_FINISH =0;
 
-    public static final String PARAM_PANDING = "pendingIntent";
+    public static final String PENDING_INTENT = "pendingIntent";
     public static final String PARAM_RESULT = "Loading..";
 
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent();
                 pi = createPendingResult(TASK_CODE, intent, 0);
-                intent = new Intent(MainActivity.this, MyService.class).putExtra(PARAM_PANDING, pi);
+                intent = new Intent(MainActivity.this, MyService.class).putExtra(PENDING_INTENT, pi);
                 startService(intent);
             }
         });

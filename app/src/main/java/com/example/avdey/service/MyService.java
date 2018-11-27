@@ -28,7 +28,7 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "Service onStartCommand");
 
-        PendingIntent pi = intent.getParcelableExtra(MainActivity.PARAM_PANDING);
+        PendingIntent pi = intent.getParcelableExtra(MainActivity.PENDING_INTENT);
         MyTask task = new MyTask(startId, pi);
         executorService.execute(task);
         return super.onStartCommand(intent, flags, startId);
@@ -53,11 +53,9 @@ public class MyService extends Service {
                 pi.send(MainActivity.STATUS_START);
                 TimeUnit.SECONDS.sleep(5);
 
-                Intent intent = new Intent().putExtra(MainActivity.PARAM_RESULT, "finish");
+                Intent intent = new Intent().putExtra(MainActivity.PARAM_RESULT, 0);
                 pi.send(MyService.this, MainActivity.STATUS_FINISH, intent);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (PendingIntent.CanceledException e) {
+            } catch (InterruptedException | PendingIntent.CanceledException e) {
                 e.printStackTrace();
             }
 
@@ -70,8 +68,11 @@ public class MyService extends Service {
         }
     }
 
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG_TAG, "Service destroy");
+    }
 
     public IBinder onBind(Intent intent) {
         return null;
