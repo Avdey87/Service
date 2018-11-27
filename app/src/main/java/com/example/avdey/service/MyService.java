@@ -28,34 +28,39 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "Service onStartCommand");
 
-        PendingIntent pi = intent.getParcelableExtra(MainActivity.PENDING_INTENT);
-        MyTask task = new MyTask(startId, pi);
-        executorService.execute(task);
+        int task = intent.getIntExtra(MainActivity.PARAM_TASK, 0);
+
+        MyRun myRun = new MyRun(startId, task );
+        executorService.execute(myRun);
         return super.onStartCommand(intent, flags, startId);
 
     }
 
 
-    class MyTask implements Runnable {
+    class MyRun implements Runnable {
         int startId;
-        PendingIntent pi;
+        int task;
 
-        public MyTask(int startId, PendingIntent pi) {
+        public MyRun(int startId, int task) {
             this.startId = startId;
-            this.pi = pi;
+            this.task = task;
+            Log.d(LOG_TAG, "MyRun create" + startId);
         }
 
         @Override
         public void run() {
             Log.d(LOG_TAG, "MyTask " + startId);
-
+            Intent intent = new Intent(MainActivity.BROADCAST_ACTION);
             try {
-                pi.send(MainActivity.STATUS_START);
+                intent.putExtra(MainActivity.PARAM_TASK, task);
+                intent.putExtra(MainActivity.PARAM_STATUS, MainActivity.STATUS_START);
+                sendBroadcast(intent);
+
                 TimeUnit.SECONDS.sleep(5);
 
-                Intent intent = new Intent().putExtra(MainActivity.PARAM_RESULT, 0);
-                pi.send(MyService.this, MainActivity.STATUS_FINISH, intent);
-            } catch (InterruptedException | PendingIntent.CanceledException e) {
+                intent.putExtra(MainActivity.PARAM_STATUS, MainActivity.STATUS_FINISH);
+                sendBroadcast(intent);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
