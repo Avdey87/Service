@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     public static int STATUS_FINISH =0;
 
     public static final String PENDING_INTENT = "pendingIntent";
-    public static final String PARAM_RESULT = "Loading..";
+    public static final String PARAM_RESULT = "result";
 
 
 
@@ -60,12 +60,12 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == STATUS_START) {
-            textView.setText(PARAM_RESULT);
+            textView.setText("Loading..");
             btStart.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
         }
         if (resultCode == STATUS_FINISH) {
-            textView.setText(PARAM_RESULT);
+            textView.setText("Ready!!");
             btStart.setEnabled(true);
             progressBar.setVisibility(View.GONE);
         }
