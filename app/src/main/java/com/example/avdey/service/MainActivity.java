@@ -2,9 +2,12 @@ package com.example.avdey.service;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +18,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+
+    LocalService localService;
+    boolean bound = false;
 
     final String LOG_TAG = "myLogs";
 
@@ -64,17 +70,52 @@ public class MainActivity extends AppCompatActivity {
 
         };
 
-        IntentFilter intentFilter = new IntentFilter(BROADCAST_ACTION);
-        registerReceiver(br, intentFilter);
+    /*    IntentFilter intentFilter = new IntentFilter(BROADCAST_ACTION);
+        registerReceiver(br, intentFilter);*/
 
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MyService.class);
-                startService(intent);
+                if (bound) {
+                    Intent intent = new Intent(MainActivity.this, LocalService.class);
+                    startService(intent);
+                }
+
+
+              /*  Intent intent = new Intent(MainActivity.this, LocalService.class);
+                startService(intent);*/
             }
         });
     }
 
 
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocalService.LocalBinder binder = (LocalService.LocalBinder) service;
+            localService = binder.getService();
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound = false;
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, LocalService.class);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (bound) {
+            unbindService(connection);
+            bound = false;
+        }
+    }
 }
