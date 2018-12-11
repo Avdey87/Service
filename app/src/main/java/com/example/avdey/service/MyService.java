@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class MyService extends Service {
 
     final String LOG_TAG = "myLOG";
-    ExecutorService executorService;
+   // ExecutorService executorService;
 
 
     @Override
