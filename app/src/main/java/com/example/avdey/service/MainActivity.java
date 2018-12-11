@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String PARAM_TASK = "task";
     public final static String PARAM_STATUS = "status";
+    private static final String BOUND = "bound";
 
     public static final String BROADCAST_ACTION = "com.avdey.service";
 
@@ -70,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
         };
 
-    /*    IntentFilter intentFilter = new IntentFilter(BROADCAST_ACTION);
-        registerReceiver(br, intentFilter);*/
+        IntentFilter intentFilter = new IntentFilter(BROADCAST_ACTION);
+        registerReceiver(br, intentFilter);
 
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,13 +82,17 @@ public class MainActivity extends AppCompatActivity {
                     startService(intent);
                 }
 
-
-              /*  Intent intent = new Intent(MainActivity.this, LocalService.class);
-                startService(intent);*/
             }
         });
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(BOUND,bound);
+        super.onSaveInstanceState(outState);
+
+    }
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
